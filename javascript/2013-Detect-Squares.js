@@ -1,40 +1,47 @@
-
-var DetectSquares = function() {
-    this.ptsCount = {};
-    this.pts = [];
-};
-
-/** 
- * @param {number[]} point
- * @return {void}
+/*
+ * Time O(N) | Space O(N)
+ * https://leetcode.com/problems/detect-squares
  */
-DetectSquares.prototype.add = function(point) {
-    var str = point[0] + ',' + point[1];
-    if (!this.ptsCount[str]) {
-        this.ptsCount[str] = 0;
+class DetectSquares {
+    constructor () {
+        this.map = {};   /* Space O(N) */
+        this.points = [];/* Space O(N) */
     }
     
-    this.ptsCount[str]++;
-    this.pts.push(point);
-};
+    add (point, { map, points } = this) {
+        const [ x, y ] = point;
+        const key = this.getKey(x, y);
+        const value = ((map[key] || 0) + 1);
 
-/** 
- * @param {number[]} point
- * @return {number}
- */
-DetectSquares.prototype.count = function(point) {
-    var res = 0
-    var [x, y] = point;
-    for (var [px, py] of this.pts) {
-        if (Math.abs(px - x) !== Math.abs(py - y) ||
-            x === px || y === py) {
-            continue;
+        map[key] = value;  /* Space O(N) */
+        points.push(point);/* Space O(N) */
+    }
+
+    count (point, { points } = this, score = 0) {
+        const [ x1, y1 ] = point;
+
+        for (const [ x2, y2 ] of points) {/* Time O(N) */
+            const isSame = (Math.abs(x2 - x1) === Math.abs(y2 - y1));
+            const isEqual = ((x1 === x2) || (y1 === y2));
+            const canSkip = (!isSame || isEqual);
+            if (canSkip) continue;
+
+            score += this.getScore(x1, y1, x2, y2);
         }
-    
-        res += (this.ptsCount[[x, py]] || 0) * (this.ptsCount[[px, y]] || 0);
+
+        return score;
+    };
+
+    getKey (x, y) {
+        return `${x},${y}`;
     }
+
+    getScore (x1, y1, x2, y2, { map } = this) {
+        const [ aKey, bKey ] = [ this.getKey(x1, y2), this.getKey(x2, y1) ];
+        const [ aScore, bScore ] = [ (map[aKey] || 0), (map[bKey] || 0) ];
     
-    return res;
+        return (aScore * bScore);
+    }
 };
 
 /** 
