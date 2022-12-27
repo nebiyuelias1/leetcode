@@ -14,7 +14,7 @@ class Solution {
             right[i] = Math.max(heights[i], max);
             max = right[i];
         }
-        System.out.println(Arrays.toString(right));
+
         for (int i = 0; i < heights.length; i++) {
             c = c + Math.min(left[i], right[i]) - heights[i];
         }
@@ -24,8 +24,8 @@ class Solution {
 
 //O(1) space
 class Solution {
-    public int trap(int[] heights) {
 
+    public int trap(int[] heights) {
         if (heights.length == 0) return 0;
 
         int l = 0, r = heights.length - 1;
@@ -45,6 +45,5 @@ class Solution {
         }
 
         return res;
-
     }
 }
